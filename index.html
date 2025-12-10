@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Clicker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+            padding: 30px;
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 25px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3),
+                        inset 0 0 20px rgba(255, 0, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+            text-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            min-width: 140px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #ff00ff;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .clicker-btn {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,0,255,0.9) 0%, rgba(0,255,255,0.9) 100%);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.7),
+                        0 0 60px rgba(0, 255, 255, 0.5),
+                        inset 0 0 20px rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .clicker-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(255, 0, 255, 0.9),
+                        0 0 70px rgba(0, 255, 255, 0.7);
+        }
+
+        .clicker-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 1),
+                        inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .clicker-btn::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: conic-gradient(from 0deg, #ff00ff, #00ffff, #ff00ff);
+            border-radius: 50%;
+            z-index: -1;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .click-effect {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            animation: clickPop 0.5s ease-out forwards;
+        }
+
+        @keyframes clickPop {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            to { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        .hologram {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, transparent 40%, rgba(0, 255, 255, 0.1) 50%, transparent 60%);
+            animation: hologramMove 8s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes hologramMove {
+            0% { transform: translateX(-100px) rotate(0deg); }
+            100% { transform: translateX(calc(100vw + 100px)) rotate(360deg); }
+        }
+
+        .instructions {
+            margin-top: 25px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .fa-icon {
+            margin-right: 8px;
+            color: #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Голограммы на фоне -->
+    <div class="hologram" style="top: 10%;"></div>
+    <div class="hologram" style="top: 40%; animation-delay: -3s;"></div>
+    <div class="hologram" style="top: 70%; animation-delay: -5s;"></div>
+
+    <!-- Частицы -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <h1><i class="fas fa-gamepad fa-icon"></i>Neon Clicker</h1>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="counter">0</div>
+                <div class="stat-label">КЛИКОВ</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="timer">00:00</div>
+                <div class="stat-label">ВРЕМЯ</div>
+            </div>
+        </div>
+
+        <button class="clicker-btn" id="clickBtn">
+            <i class="fas fa-bolt"></i> ТАПАЙ! <i class="fas fa-bolt"></i>
+        </button>
+
+        <div class="instructions">
+            <p><i class="fas fa-mouse-pointer fa-icon"></i>Кликай как можно быстрее!</p>
+            <p><i class="fas fa-clock fa-icon"></i>Время идет с первого клика</p>
+        </div>
+    </div>
+
+    <script>
+        let counter = 0;
+        let startTime = null;
+        let timerInterval = null;
+        const counterElement = document.getElementById('counter');
+        const timerElement = document.getElementById('timer');
+        const clickBtn = document.getElementById('clickBtn');
+        const particlesContainer = document.getElementById('particles');
+
+        // Создаем частицы на фоне
+        function createParticles() {
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 5 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, 255, 0.7)`;
+                particle.style.animationDuration = Math.random() * 10 + 5 + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Эффект при клике
+        function createClickEffect(x, y) {
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.style.left = x + 'px';
+            effect.style.top = y + 'px';
+            effect.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, 255, 0.8)`;
+            document.body.appendChild(effect);
+            setTimeout(() => effect.remove(), 500);
+        }
+
+        // Форматирование времени
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Запуск таймера
+        function startTimer() {
+            if (!startTime) {
+                startTime = new Date();
+                timerInterval = setInterval(() => {
+                    const now = new Date();
+                    timerElement.textContent = formatTime(now - startTime);
+                }, 1000);
+            }
+        }
+
+        // Обработчик клика
+        clickBtn.addEventListener('click', (e) => {
+            startTimer();
+            counter++;
+            counterElement.textContent = counter;
+            
+            // Эффект
+            createClickEffect(e.clientX, e.clientY);
+            
+            // Анимация кнопки
+            clickBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                clickBtn.style.transform = 'scale(1)';
+            }, 100);
+            
+            // Случайный цвет кнопки
+            const hue1 = Math.floor(Math.random() * 360);
+            const hue2 = (hue1 + 180) % 360;
+            clickBtn.style.background = `radial-gradient(circle, hsl(${hue1}, 100%, 70%) 0%, hsl(${hue2}, 100%, 70%) 100%)`;
+        });
+
+        // Создаем частицы при загрузке
+        createParticles();
+
+        // Добавляем голограммы
+        for (let i = 0; i < 5; i++) {
+            const hologram = document.createElement('div');
+            hologram.className = 'hologram';
+            hologram.style.top = Math.random() * 100 + 'vh';
+            hologram.style.left = Math.random() * 100 + 'vw';
+            hologram.style.width = Math.random() * 300 + 100 + 'px';
+            hologram.style.height = hologram.style.width;
+            hologram.style.animationDelay = Math.random() * -10 + 's';
+            hologram.style.animationDuration = Math.random() * 10 + 10 + 's';
+            document.body.appendChild(hologram);
+        }
+    </script>
+</body>
+</html>
